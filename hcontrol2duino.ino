@@ -116,10 +116,10 @@ ReformRes
     // Verbose
     Serial.println(buf);
 
-	// Clean up
+    // Clean up
     aJson.deleteItem(root);
     client.flush();
     client.stop();
 
-	delay(REFRESH_RATE);
+    delay(REFRESH_RATE);
 }
