@@ -35,9 +35,9 @@ void setup()
     Serial.println("Successfully get IP Address");
 
     // Setup pin
-	pinMode(SL1_PIN, OUTPUT);
-	// Init pin
-	digitalWrite(SL1_PIN, HIGH);
+    pinMode(SL1_PIN, OUTPUT);
+    // Init pin
+    digitalWrite(SL1_PIN, HIGH);
 }
 
 void loop()
@@ -45,17 +45,17 @@ void loop()
     // reset flags
     err = false;
 
-	// connect to server
-	if( client.connect(server, 5000) ) {
-		Serial.println("Connected");
-		client.println("GET /api/{AUTH_TOKEN}/get/OUTDOOR/spotlight-1 HTTP/1.1");
-		client.println();
-	}
-	else {
-		Serial.println("Fail to connect");
-		err = true;
-	}
-
+    // connect to server
+    if( client.connect(server, 5000) ) {
+        Serial.println("Connected");
+        client.println("GET /api/{AUTH_TOKEN}/get/OUTDOOR/spotlight-1 HTTP/1.1");
+        client.println();
+    }
+    else {
+        Serial.println("Fail to connect");
+        err = true;
+    }
+ReformRes
     /*
         Process response from server
     */
@@ -119,7 +119,7 @@ void loop()
 	// Clean up
     aJson.deleteItem(root);
     client.flush();
-	client.stop();
+    client.stop();
 
 	delay(REFRESH_RATE);
 }
