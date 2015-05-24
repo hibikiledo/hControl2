@@ -36,7 +36,7 @@ Connect to the server via Ethernet shield.
 It use API to only **read** house state from the server.
 
 #####Files related to arduino
-- hcontrol2duino : Arduino sketch
+- hcontrol2duino.ino : Arduino sketch
 
 
 ### Configurations
@@ -51,7 +51,7 @@ Open file hcontrol2.py, scroll down and change
 app.run(debug=True) to app.run(host='0.0.0.0')
 
 ### Add more objects
-Now, hstates.py implement 2 class of objects which are OUTDOOR and INDOOR.
+Now, hstates.py implement 2 class of objects which are OUTDOOR and INDOOR.  
 You may add more object by using function
 - hstates.add(object, group) : add new object to the group
 
