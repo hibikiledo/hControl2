@@ -1,0 +1,37 @@
+body {
+    background-color: black
+}
+
+h1 {
+    color: #E0E0E0
+}
+
+.row {
+    color: #E0E0E0
+}
+
+.indent {
+    font-size: 1.35em;
+    margin-left: 25pt;
+}
+
+.indicator {
+    margin-right: 10pt;
+}
+
+.control {
+    font-size: 1.35em;
+    margin-right: 5pt;
+}
+
+.off {
+    color: #FC7272
+}
+
+.on {
+    color: #8BE368
+}
+
+.subhead {
+    font-size: 1.75em
+}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>hControl <span class="label label-default">2</span></h1>
+        </div>
+    </div>
+
+    <div class="row"><br></div>
+
+    <div class="row">
+        <div class="col-md-12 subhead">
+            <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+            Home Status
+        </div>
+    </div>
+
+    <div class="row"><br></div>
+
+    <div class="row">
+        <div class="col-md-12" id="hstatus">
+
+        </div>
+    </div>
+
+    <div class="row"><br></div>
+
+    <div class="row">
+        <div class="col-md-12 subhead">
+            <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+            Control Panel
+        </div>
+    </div>
+
+    <div class="row"><br></div>
+
+    <div class="row">
+        <div class="col-md-12" id="hcp">
+
+        </div>
+    </div>
+
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<script>
+
+    // adamJLev @ StackOverflow
+    String.prototype.format = String.prototype.f = function() {
+        var s = this,
+            i = arguments.length;
+
+        while (i--) {
+            s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+        }
+        return s;
+    };
+
+    // Public stuffs
+    var public_key = prompt("Enter Passphrase");
+    var auth_token = "";
+
+    var hstatus = $("#hstatus");
+    var hcp = $("#hcp");
+
+    init();
+
+    function init() {
+
+        // Perform authentication process
+        $.get( "api/auth/{0}".f(public_key), function( data ) {
+            if( data.res === "ok" ) {
+                auth_token = data.auth_token;
+
+                // Get registered objects from server
+                $.get( "api/{0}/report".f(auth_token), function( data ) {
+                  if( data.res === "ok" ) {
+                    craftIndoorUI( data.data.INDOOR );
+                    craftStatusUI( data.data.OUTDOOR );
+
+                    // refresh component status
+                    refresh();
+                  }
+                  else {
+                    // Show error message
+                    alert("ERROR: " + "server response unexpected data.")
+                  }
+                });
+
+            }
+            else {
+                // Show error message
+                alert("ERROR: " + data.reason)
+            }
+        });
+
+
+    }
+
+    function refresh() {
+        $.get( "api/{0}/report".f(auth_token), function( data ) {
+          if( data.res === "ok" ) {
+            // Update UIs
+            updateUI(data);
+          }
+          else {
+            // Set error message
+
+          }
+        });
+    }
+
+    function updateUI( data ) {
+
+        var indoor = data.data.INDOOR;
+        var outdoor = data.data.OUTDOOR;
+
+        for( var i = 0; i < indoor.length; i++ ) {
+            var t = $("#"+indoor[i].object);
+            t.removeClass("on");
+            t.removeClass("off");
+            if( indoor[i].value === "on" ) {
+                t.addClass("on");
+            }
+            else {
+                t.addClass("off");
+            }
+        }
+
+        for( var i = 0; i < outdoor.length; i++ ) {
+            var t = $("#"+outdoor[i].object);
+            t.removeClass("on");
+            t.removeClass("off");
+            if( outdoor[i].value === "on" ) {
+                t.addClass("on");
+            }
+            else {
+                t.addClass("off");
+            }
+        }
+    }
+
+    function craftIndoorUI( inList ) {
+        for( var i = 0; i < inList.length; i++ ) {
+            // Status
+
+            var span = $("<span class=\"glyphicon glyphicon-off indicator\" aria-hidden=\"true\"></span>");
+            span.attr("id", inList[i].object);
+
+            $("<div class=\"indent\"></div>").append(span).append(inList[i].object.toUpperCase()).appendTo(hstatus);
+
+            // Controls
+
+            var label = $("<h4></h4>").text(inList[i].object.toUpperCase() );
+            var onBtn  = $("<button type=\"button\" class=\"btn btn-success control\"></button>").text("ON");
+            onBtn.attr("onclick", "on('{0}','{1}');".f('indoor', inList[i].object));
+
+            var offBtn = $("<button type=\"button\" class=\"btn btn-danger control\"></button>").text("OFF");
+            offBtn.attr("onclick", "off('{0}','{1}');".f('indoor', inList[i].object));
+
+            $("<div class=\"indent\"></div>").append(label).append(onBtn).append(offBtn).appendTo(hstatus);
+
+        }
+    }
+
+    function craftStatusUI( outList ) {
+        for( var i = 0; i < outList.length; i++ ) {
+            // Status
+
+            var span = $("<span class=\"glyphicon glyphicon-off indicator\" aria-hidden=\"true\"></span>");
+            span.attr("id", outList[i].object);
+
+            $("<div class=\"indent\"></div>").append(span).append(outList[i].object.toUpperCase()).appendTo(hstatus);
+
+            // Controls
+
+            var label = $("<h4></h4>").text(outList[i].object.toUpperCase() );
+            var onBtn  = $("<button type=\"button\" class=\"btn btn-success control\"></button>").text("ON");
+            onBtn.attr("onclick", "on('{0}','{1}');".f('outdoor', outList[i].object));
+
+            var offBtn = $("<button type=\"button\" class=\"btn btn-danger control\"></button>").text("OFF");
+            offBtn.attr("onclick", "off('{0}','{1}');".f('outdoor', outList[i].object));
+
+            $("<div class=\"indent\"></div>").append(label).append(onBtn).append(offBtn).appendTo(hcp);
+
+        }
+    }
+
+    function on(group, obj) {
+         $.get( "api/{0}/OUTDOOR/{1}/on".f(auth_token, obj), function( data ) {
+          if( data.res === "ok" ) {
+            // Update UIs
+            refresh();
+          }
+          else {
+            // show error message
+            alert("ERROR: " + data.reason)
+          }
+        });
+    }
+
+    function off(group, obj) {
+         $.get( "api/{0}/OUTDOOR/{1}/off".f(auth_token, obj), function( data ) {
+          if( data.res === "ok" ) {
+            // Update UIs
+            refresh();
+          }
+          else {
+              // show error message
+              alert("ERROR: " + data.reason)
+          }
+        });
+    }
+
+</script>
+
+</body>
+</html>
