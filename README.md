@@ -14,7 +14,7 @@ You may wonder why I need to use it for such purpose. The answer is simple. It's
 
 #####Server
 The server runs web server written in python with Flask framework.  
-House states is kept inside **hstates** module where values can be changed from the API.
+House states is kept inside **hstates** module where values can be changed from the API.  
 Server provides API for both arduino and web interface to access/modify house states.
 
 #####Files related to server side
