@@ -27,13 +27,17 @@ Server provides API for both arduino and web interface to access/modify house st
 Client is the web interface written with HTML, CSS, jQuery2, and Bootstrap.
 Client connects to the server via the API to set / get information from the server.
 
+#####Files related to client side
+- template/index.html : web interface
+- static/style.css : stylesheet
+
 #####Arduino
 Connect to the server via Ethernet shield.  
 It use API to only **read** house state from the server.
 
-#####Files related to client side
-- template/index.html : web interface
-- static/style.css : stylesheet
+#####Files related to arduino
+- hcontrol2duino : Arduino sketch
+
 
 ### Configurations
 
